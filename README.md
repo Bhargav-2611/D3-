@@ -51,11 +51,13 @@ Future improvements we are considering:
 - Mobile support: Bring the detection system to smartphones
 - Cloud storage: Save session history online for better tracking
 - AI predictions: Improve drowsiness detection using deep learning
+  
+## Guide by
+- Mr. Abdul Aziz Md (TechSaksham)
 
 ## Contributors
-- Your Name (your.email@example.com)
-- Other Contributors
-
-## Acknowledgments
-A big shout-out to the open-source community for making computer vision and AI accessible to everyone.
+- BHARGAV SUNKARI (bhargavsunkari13@gmail.com)
+- SANTHOSH GEMBALI (gembalisantoshkumar14@gmail.com)
+- PAVAN KUMAR SINGISETTI (pavansingisetti@gmail.com)
+- ARAVIND KUMAR RAVIPUDI (aravindravipudi@gmail.com)
 
