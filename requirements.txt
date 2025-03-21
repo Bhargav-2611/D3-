@@ -4,4 +4,4 @@ dlib-bin
 markdown-it-py
 mdurl
 rich
-pygments
+pygame
