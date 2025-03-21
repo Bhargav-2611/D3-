@@ -1,4 +1,9 @@
 streamlit
 opencv-python-headless
-
-
+dlib
+numpy
+pandas
+pygame
+imutils
+cmake
+protobuf
