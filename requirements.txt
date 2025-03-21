@@ -1,6 +1,6 @@
 streamlit
 opencv-python-headless
-dlib
+dlib==19.24.0
 markdown-it-py
 mdurl
 rich
