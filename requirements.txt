@@ -6,3 +6,4 @@ mdurl
 rich
 pygame
 imutils
+face_recognition
