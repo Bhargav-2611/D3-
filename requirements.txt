@@ -10,3 +10,4 @@ face_recognition
 numpy
 pandas
 pillow
+cmake
