@@ -1,10 +1,3 @@
 streamlit
 opencv-python-headless
 dlib
-numpy
-pandas
-pygame
-sqlite3  # (Not needed in requirements.txt, as it's built-in)
-hashlib  # (Not needed, as it's built-in)
-imutils
-time  # (Not needed, as it's built-in)
