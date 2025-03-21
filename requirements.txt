@@ -4,6 +4,6 @@ opencv-python-headless==4.10.0.84  # Use headless version for cloud deployment
 numpy==2.0.2
 pygame==2.6.1
 imutils==0.5.4
-./dlib-19.22.99-cp39-cp39-win_amd64.whl
+./dlib-19.24.99-cp312-cp312-win_amd64.whl
 Pillow==11.1.0
 streamlit-option-menu==0.3.13
