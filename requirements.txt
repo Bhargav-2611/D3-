@@ -6,3 +6,6 @@ pygame==2.6.1
 imutils==0.5.4
 Pillow==11.1.0
 streamlit-option-menu==0.3.13
+dlib
+cmake
+numpy
