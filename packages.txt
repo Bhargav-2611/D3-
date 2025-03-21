@@ -1,4 +1,1 @@
-cmake
-libopenblas-dev
-liblapack-dev
-python3-dev
+
