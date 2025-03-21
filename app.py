@@ -333,7 +333,7 @@ if not st.session_state.get('logged_in', False):
                 st.success("✅ Login successful!")
                 st.session_state.logged_in = True
                 st.session_state.username = username  # Ensure this line is present
-                st.experimental_rerun()
+                st.rerun()
             else:
                 st.error("❌ Invalid credentials. Please try again.")
 
@@ -345,7 +345,7 @@ if not st.session_state.get('logged_in', False):
                 st.success(f"✅ Welcome, {username}! Login successful.")
                 st.session_state.logged_in = True
                 st.session_state.username = username
-                st.experimental_rerun()
+                st.rerun()
             else:
                 st.error("❌ Face not recognized. Try again.")
 # Show Sidebar options only if the user is logged in
@@ -394,9 +394,7 @@ if st.session_state.get('logged_in', False):
 
         # Start ride detection button
         if st.button("Start Ride"):
-            ride_start_time = time.strftime("%Y-%m-%d %H:%M:%S")  # Record start time
-            ride_date = time.strftime("%Y-%m-%d")  
-            # Load the alarm sound
+        # Load the alarm sound
             alarm_sound = pygame.mixer.Sound('alarm-car-or-home-62554.mp3')
 
             # Function to calculate the Eye Aspect Ratio (EAR)
@@ -422,6 +420,16 @@ if st.session_state.get('logged_in', False):
             # EAR threshold for detecting closed eyes
             EYE_AR_THRESH = 0.2
 
+            # Time threshold for consecutive eye closure (in seconds)
+            TIME_THRESH = 0.5
+
+            # Time threshold for no driver detection (in seconds)
+            NO_DRIVER_THRESH = 2.0
+
+            # Variables to track eye closure duration and no driver detection
+            consecutive_close_start = None
+            no_driver_start = None
+
             # Start video capture
             cap = cv2.VideoCapture(0)
 
@@ -439,11 +447,18 @@ if st.session_state.get('logged_in', False):
                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
                 faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
-                
+
                 if len(faces) == 0:
-                    # No face detected
-                    cv2.putText(frame, "No Driver Detected", (frame.shape[1] // 2 - 100, frame.shape[0] // 2), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
+                    if no_driver_start is None:
+                        no_driver_start = time.time()
+                    elif (time.time() - no_driver_start) >= NO_DRIVER_THRESH:
+                        cv2.putText(frame, "No Driver Detected", (frame.shape[1] // 2 - 100, frame.shape[0] // 2), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
+                        if not alarm_played:
+                            alarm_sound.play()
+                            alarm_played = True
+                            alarm_start_time = time.time()
                 else:
+                    no_driver_start = None
                     for (x, y, w, h) in faces:
                         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                         dlib_faces = detector(gray)
@@ -458,14 +473,18 @@ if st.session_state.get('logged_in', False):
                             right_ear = eye_aspect_ratio(right_eye)
                             ear = (left_ear + right_ear) / 2.0
 
-                            # Detect drowsiness based on EAR
+                            # Detect drowsiness based on EAR and time threshold
                             if ear < EYE_AR_THRESH:
-                                cv2.putText(frame, "DROWSY", (frame.shape[1] // 2 - 50, frame.shape[0] // 2), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
-                                if not alarm_played:
-                                    alarm_sound.play()
-                                    alarm_played = True
-                                    alarm_start_time = time.time()
+                                if consecutive_close_start is None:
+                                    consecutive_close_start = time.time()
+                                elif (time.time() - consecutive_close_start) >= TIME_THRESH:
+                                    cv2.putText(frame, "DROWSY", (frame.shape[1] // 2 - 50, frame.shape[0] // 2), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 2)
+                                    if not alarm_played:
+                                        alarm_sound.play()
+                                        alarm_played = True
+                                        alarm_start_time = time.time()
                             else:
+                                consecutive_close_start = None
                                 cv2.putText(frame, "AWAKE", (frame.shape[1] // 2 - 50, frame.shape[0] // 2), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2)
                                 if alarm_played:
                                     alarm_sound.stop()
@@ -483,9 +502,6 @@ if st.session_state.get('logged_in', False):
                 video_frame.image(frame, channels="BGR")
 
                 if stop_detection:
-                    ride_end_time = time.strftime("%Y-%m-%d %H:%M:%S")  # Record end time
-                    ride_duration = int((time.time() - ride_start_time) / 60)  # Calculate duration
-                    st.success("Ride details saved successfully!")
                     break
 
             # Release camera and destroy windows
@@ -649,7 +665,7 @@ if st.session_state.get('logged_in', False):
         st.write("---")
         st.subheader("Chat with Us")
 
-        # Simple chatbot interface
+# Simple chatbot interface
         user_input = st.text_input("Type your message here...")
 
         if st.button("Send"):
@@ -659,8 +675,19 @@ if st.session_state.get('logged_in', False):
                 "help": "Sure! What do you need help with?",
                 "support": "You can reach our support team at bhargavsunkari13@gmail.com.",
                 "thanks": "You're welcome! If you have any more questions, feel free to ask.",
-                "bye": "Goodbye! Have a great day!"
+                "bye": "Goodbye! Have a great day!",
+                "what is this project about?": "This project is about Driver Drowsiness Detection. It uses advanced computer vision and machine learning techniques to monitor the driver’s facial expressions and detect early signs of drowsiness to prevent accidents.",
+                "how does the drowsiness detection work?": "The system continuously monitors the driver’s face, focusing on the eyes. It calculates the Eye Aspect Ratio (EAR) and triggers an alert if the eyes remain closed for a certain duration, indicating drowsiness.",
+                "what is ear?": "EAR stands for Eye Aspect Ratio. It is a measure used to detect eye closure. If the EAR falls below a certain threshold, it indicates that the eyes are closed.",
+                "what happens if no driver is detected?": "If no driver is detected for more than 5 seconds, the system will trigger an alarm to alert that the driver is not present.",
+                "how do I start the drowsiness detection?": "To start the drowsiness detection, click on the 'Start Ride' button on the Home page.",
+                "how do I stop the detection?": "To stop the detection, click on the 'Stop Detection' button that appears after starting the ride.",
+                "what are the system requirements?": "The system requires a webcam, a computer with Python installed, and the necessary libraries such as OpenCV, Dlib, and face_recognition.",
+                "how do I install the required libraries?": "You can install the required libraries using pip. For example: pip install opencv-python dlib face_recognition",
+                "can I use this project on a mobile device?": "Currently, this project is designed to run on a computer. Mobile support is not available.",
+                "who developed this project?": "This project was developed by Bhargav Sunkari and his team."
             }
+            
             # Get the response based on user input
             response = responses.get(user_input.lower(), "I'm sorry, I didn't understand that. Can you please rephrase?")
             
