@@ -6,7 +6,7 @@ mdurl
 rich
 pygame
 imutils
-face_recognition
+face-recognition
 numpy
 pandas
 pillow
