@@ -8,3 +8,4 @@ Pillow==11.1.0
 streamlit-option-menu==0.3.13
 mediapipe
 face-recognition
+cmake
