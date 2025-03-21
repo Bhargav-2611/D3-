@@ -3,5 +3,5 @@ opencv-python-headless==4.10.0.84
 dlib-bin
 pygame==2.6.0
 imutils==0.5.4
-face_recognition @ git+https://github.com/thetoby9944/face_recognition 
+face_recognition
 numpy
