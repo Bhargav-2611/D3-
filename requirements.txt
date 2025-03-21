@@ -1,9 +1,7 @@
 streamlit
 opencv-python-headless
 dlib
-numpy
-pandas
-pygame
-imutils
-cmake
-protobuf
+markdown-it-py
+mdurl
+rich
+pygments
